@@ -128,101 +128,18 @@ following code:
 brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
                 family = "gaussian", tree.complexity = 5,
                 learning.rate = 0.01, bag.fraction = 0.5)
-#> 
-#>  
-#>  GBM STEP - version 2.9 
-#>  
-#> Performing cross-validation optimisation of a boosted regression tree model 
-#> for y and using a family of gaussian 
-#> Using 500 observations and 22 predictors 
-#> creating 10 initial models of 50 trees 
-#> 
-#>  folds are unstratified 
-#> total mean deviance =  1.8246 
-#> tolerance is fixed at  0.0018 
-#> ntrees resid. dev. 
-#> 50    1.2582 
-#> now adding trees... 
-#> 100   0.9712 
-#> 150   0.7993 
-#> 200   0.6793 
-#> 250   0.5956 
-#> 300   0.5357 
-#> 350   0.4941 
-#> 400   0.4623 
-#> 450   0.4384 
-#> 500   0.4196 
-#> 550   0.4053 
-#> 600   0.3924 
-#> 650   0.3831 
-#> 700   0.3767 
-#> 750   0.3723 
-#> 800   0.3674 
-#> 850   0.3628 
-#> 900   0.3594 
-#> 950   0.3566 
-#> 1000   0.3542 
-#> 1050   0.352 
-#> 1100   0.3506 
-#> 1150   0.3488 
-#> 1200   0.347 
-#> 1250   0.3458 
-#> 1300   0.3453 
-#> 1350   0.3446 
-#> 1400   0.3441 
-#> 1450   0.343 
-#> 1500   0.3418 
-#> 1550   0.3411 
-#> 1600   0.3406 
-#> 1650   0.3401 
-#> 1700   0.3389 
-#> 1750   0.3377 
-#> 1800   0.3376 
-#> 1850   0.3368 
-#> 1900   0.336 
-#> 1950   0.3353 
-#> 2000   0.3353 
-#> 2050   0.3348 
-#> 2100   0.3345 
-#> 2150   0.3346 
-#> 2200   0.3345 
-#> 2250   0.3341 
-#> 2300   0.3336 
-#> 2350   0.3334 
-#> 2400   0.3327 
-#> 2450   0.3327 
-#> 2500   0.3323 
-#> 2550   0.3321 
-#> 2600   0.3319 
-#> 2650   0.3317 
-#> 2700   0.3316 
-#> 2750   0.332 
-#> 2800   0.3319 
-#> 2850   0.3316 
-#> 2900   0.3313 
-#> 2950   0.3313 
-#> 3000   0.331 
-#> 3050   0.3309
 ```
 
 ![](README_files/figure-markdown_github/fit_brt-1.png)
 
-    #> 
-    #> mean total deviance = 1.825 
-    #> mean residual deviance = 0.014 
-    #>  
-    #> estimated cv deviance = 0.331 ; se = 0.022 
-    #>  
-    #> training data correlation = 0.996 
-    #> cv correlation =  0.908 ; se = 0.009 
-    #>  
-    #> elapsed time -  0.27 minutes
+``` r
 
-    # predictions from brt across landscape
-    pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
+# generate predictions from brt across landscape
+pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
 
-    # variable importance
-    var_imp <- summary(brt)
+# variable importance
+var_imp <- summary(brt)
+```
 
 ![](README_files/figure-markdown_github/fit_brt-2.png)
 

@@ -183,7 +183,7 @@ print(head(dat))
 
 We first analyze the dataset with boosted regression trees, using the following code:
 
-```{r fit_brt, cache = TRUE, message = FALSE}
+```{r fit_brt, cache = TRUE, results = "hide"}
 
 # ---------------------------------------
 # Fit BRT and generate landscape predictions
@@ -193,7 +193,7 @@ brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
                 family = "gaussian", tree.complexity = 5,
                 learning.rate = 0.01, bag.fraction = 0.5)
 
-# predictions from brt across landscape
+# generate predictions from brt across landscape
 pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
 
 # variable importance
