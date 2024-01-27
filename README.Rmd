@@ -32,9 +32,9 @@ We want to test if Machine Learning methods and Bayesian models can be used in c
 
 2) Use the most important covariates in a Bayesian species distribution model that allows us to propagage uncertainty, and simultaneously accounts for spatial autocorrelation, random effects, and informative priors.
 
-This approach may be an efficient way to "let the data speak for itself" in identifying the most important covariates through machine learning, after which we can use Bayesian models to properly account for spatial autocorrelation and error propagation.
+This approach may be an efficient way to "let the data speak for itself" in identifying the most important covariates through machine learning, after which we can use Bayesian models to properly account for spatial autocorrelation and error propagation.  On the other hand, this may be a form of "double-dipping" from the data that will lead to over-fit models that reduce performance.  
 
-Our main concern is whether this is a form of "double-dipping" from the data that will lead to over-fit models that reduce performance.  
+We therefore conducted simulations to evaluate if this is a reasonable approach for modeling.
 
 # Background
 
@@ -118,7 +118,8 @@ for (i in 1:n_var){
   
 }
 
-cov_plot_all <- ggarrange(plotlist = plot_list, ncol = 5, nrow = 5, align = "hv")
+cov_plot_all <- ggarrange(plotlist = plot_list, ncol = 5, nrow = 5, align = "hv") %>%
+  annotate_figure(., top = text_grob("Simulated spatial covariates", color = "black", face = "bold", size = 14))
 print(cov_plot_all)
 
 ```
@@ -141,7 +142,8 @@ simdat <- simdat %>% mutate(y = y) %>% relocate(Lat,Lon,y)
 response_plot <- ggplot(simdat)+
   geom_raster(aes(x = Lon, y = Lat, fill = y))+
   scale_fill_gradientn(colors = viridis(10))+
-  theme_bw()
+  theme_bw()+
+  ggtitle("Simulated response variable\n(e.g., a species distribution)\n")
 
 print(response_plot)
 
@@ -151,7 +153,8 @@ We then simulate a survey of the species across the landscape.  We assume there 
 
 *However*, we assume that the surveyor does not record the first 3 covariates.  Thus, there are several spatially autocorrelated covariates that are affecting the species distribution but which cannot be (or have not been) measured.  Below, we illustrate the survey locations across the landscape, and the table shows the first several rows of data available for analysis:
 
-```{r analysis_data_example, echo = FALSE, fig.width=6, fig.height=6, }
+```{r analysis_data_example, echo = FALSE, fig.width=6, fig.height=6}
+
 # Assume we cannot measure three covariates (drop them from dataframe)
 simdat <- simdat %>% dplyr::select(-Cov_1,-Cov_2,-Cov_3)
 
@@ -170,17 +173,17 @@ survey_plot <- ggplot(simdat)+
   geom_raster(aes(x = Lon, y = Lat, fill = y))+
   scale_fill_gradientn(colors = viridis(10))+
   geom_jitter(data = dat, aes(x = Lon, y = Lat))+
-  theme_bw()
+  theme_bw()+
+  ggtitle("Survey locations")
 print(survey_plot)
 
 print(head(dat))
 
 ```
 
+We first analyze the dataset with boosted regression trees, using the following code:
 
-assume the following 
-
-```{r echo = FALSE, cache = TRUE}
+```{r fit_brt, cache = TRUE}
 
 # ---------------------------------------
 # Fit BRT and generate landscape predictions
@@ -195,7 +198,11 @@ pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response"
 
 # variable importance
 var_imp <- summary(brt)
+```
 
+
+
+```{r e}
 # ---------------------------------------
 # Fit model using INLA
 # ---------------------------------------

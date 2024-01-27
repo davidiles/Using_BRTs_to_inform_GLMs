@@ -15,10 +15,12 @@ distributions. Our approach is to:
 This approach may be an efficient way to “let the data speak for itself”
 in identifying the most important covariates through machine learning,
 after which we can use Bayesian models to properly account for spatial
-autocorrelation and error propagation.
+autocorrelation and error propagation. On the other hand, this may be a
+form of “double-dipping” from the data that will lead to over-fit models
+that reduce performance.
 
-Our main concern is whether this is a form of “double-dipping” from the
-data that will lead to over-fit models that reduce performance.
+We therefore conducted simulations to evaluate if this is a reasonable
+approach for modeling.
 
 # Background
 
@@ -85,121 +87,225 @@ for analysis:
 
 ![](README_files/figure-markdown_github/analysis_data_example-1.png)
 
-    #>   Lat Lon          y       Cov_4        Cov_5      Cov_6       Cov_7      Cov_8
-    #> 1  61   7 -0.9388965  0.47371046 -2.012667549 -0.2829903 -1.16772021  0.2359831
-    #> 2   6   6  0.0880656  0.08786953 -0.779571566  0.1395168 -0.29217859  1.4124288
-    #> 3  52   2  1.1803392  1.59067642  0.490070393 -1.0305699 -1.55478000  0.1545154
-    #> 4   7  83 -0.4787807 -0.62514224  0.763407851  0.7344660  1.53270413 -0.9027226
-    #> 5  42  11  0.9042171 -0.41232338  0.171708931 -0.9473261 -0.03370702 -1.5930700
-    #> 6  95  48 -3.0299608 -0.42607442 -0.002415646  1.3466899  0.71450321  0.8968242
-    #>        Cov_9      Cov_10     Cov_11     Cov_12     Cov_13      Cov_14
-    #> 1  0.9499256  1.82300818  1.5894835 -0.8693502  0.3135130 -0.45294039
-    #> 2 -0.5130206  0.46948829 -0.7856515 -1.0559092  1.2190467  0.86498155
-    #> 3 -0.1491359  2.23220824 -0.4271634  0.6443190  0.2871630 -0.03919319
-    #> 4 -1.8372636 -0.01025496 -0.5114358  0.5753550 -0.6666246  1.41642086
-    #> 5 -0.4806327 -0.04208725  2.2028051  0.8751997  0.5978097  0.84376483
-    #> 6  0.8647323  0.18479181 -1.3026645  0.2773482 -0.4220347 -0.19650393
-    #>       Cov_15      Cov_16     Cov_17     Cov_18      Cov_19     Cov_20
-    #> 1  0.7315646  0.07802433 -1.0822567  0.8897636 -1.15119400 -0.3856629
-    #> 2  0.5810093 -0.62354090 -1.6611011  1.6371258 -1.12044977 -0.7050954
-    #> 3  0.5012458  0.42933319 -0.6853281  0.1493396 -0.74676060  0.5553814
-    #> 4 -0.5534754 -0.41033859  0.3011067 -0.3891386 -1.04513602  0.4958546
-    #> 5 -2.5225031  1.66733837 -0.9096757 -0.5464115  0.67572515 -0.2636746
-    #> 6 -3.1434381 -0.39819112 -0.2348654  0.8877313  0.05202036 -0.7036159
-    #>        Cov_21      Cov_22     Cov_23      Cov_24     Cov_25
-    #> 1 -2.26643178 -1.74459119  1.2621166 -1.28951118  0.1018613
-    #> 2  1.33879946  0.22336397 -1.3954533  0.90879809  1.6518420
-    #> 3  0.01207982 -0.09084017  0.6222731 -0.03161778  1.7633580
-    #> 4  1.90390100  0.63295170  1.3754519  0.79527414  1.3003943
-    #> 5 -0.81048963  1.64976701 -0.9721220 -0.12403955 -0.6672910
-    #> 6 -0.42723334 -1.25195958 -0.1063610  0.15618033 -0.7955136
+    #>   Lat Lon          y       Cov_4       Cov_5      Cov_6      Cov_7      Cov_8
+    #> 1  73  69 -0.2538863 -0.16914296 -0.24950457 -0.1436170  0.1655882  0.9537875
+    #> 2  29  63 -0.7192301 -0.65447284 -1.06110775  0.9393136 -0.2473942 -0.2342259
+    #> 3  11  33  1.4424011 -0.68305989 -0.84693783  1.5997349 -0.1197359 -0.0679212
+    #> 4  47  53  0.4941388 -0.74372393 -0.38376979 -1.2076389 -0.4795987 -1.0962470
+    #> 5   5  82 -0.7544612  0.06209212 -0.19755768 -1.4226318 -0.5171540 -1.0441971
+    #> 6  48  53  0.4410513  0.60893739  0.05354572 -1.1762807 -0.3918984 -1.0045922
+    #>        Cov_9     Cov_10    Cov_11     Cov_12     Cov_13     Cov_14     Cov_15
+    #> 1 -1.5864093 -0.6549646 0.3557094 -0.6160459 -0.5829733 -1.0356796  0.9305570
+    #> 2 -0.8161743 -0.1396460 0.3443138 -1.6036078  0.5640454 -1.5094987  0.5614001
+    #> 3  2.2023648 -1.2545822 0.4948392  0.4111116 -1.3935140  0.3401511 -0.3151036
+    #> 4 -0.9056128  0.8629965 1.7771041 -1.0740311  1.1662876  0.3654567  0.9313229
+    #> 5 -0.9300381  0.5048646 1.8763404  0.9675379 -1.0407352 -0.1986740  1.1925720
+    #> 6 -0.5598764  1.3588330 0.9326299 -0.8688453  0.7598520  0.3707100  0.9351050
+    #>        Cov_16      Cov_17    Cov_18     Cov_19      Cov_20       Cov_21
+    #> 1  0.53485940 -2.25936368 0.2426735  0.1745034 -0.10922768 -0.349926456
+    #> 2 -0.32956232 -1.38952870 0.6642444 -0.7896025 -1.98265542 -0.007420441
+    #> 3 -0.91740167 -0.43759328 1.5239995 -1.1706657  0.26876350 -0.955006740
+    #> 4 -0.01998660 -0.05852607 0.2778502  1.2257487  0.06207714 -0.693116442
+    #> 5 -0.09006953  1.31329887 0.1270773 -1.8047022 -1.23145002  1.558844709
+    #> 6  0.38650839  0.38150338 0.5912538  0.9770911  0.30068619 -0.832365081
+    #>       Cov_22     Cov_23     Cov_24     Cov_25
+    #> 1 -0.3982590 -0.7933425  0.3207482 -0.8365926
+    #> 2  1.0083800  0.3332268 -1.1810154  2.4431228
+    #> 3 -1.0243096 -1.9324267 -1.2661103 -0.5739098
+    #> 4  0.4767564 -0.4557411  0.2325089 -0.4571904
+    #> 5  0.5874248 -1.2551049 -0.7659406  0.1937810
+    #> 6  0.3881231 -0.7095361  0.5857132 -0.1842713
 
-assume the following
+We first analyze the dataset with boosted regression trees, using the
+following code:
+
+``` r
+
+# ---------------------------------------
+# Fit BRT and generate landscape predictions
+# ---------------------------------------
+
+brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
+                family = "gaussian", tree.complexity = 5,
+                learning.rate = 0.01, bag.fraction = 0.5)
+#> 
+#>  
+#>  GBM STEP - version 2.9 
+#>  
+#> Performing cross-validation optimisation of a boosted regression tree model 
+#> for y and using a family of gaussian 
+#> Using 500 observations and 22 predictors 
+#> creating 10 initial models of 50 trees 
+#> 
+#>  folds are unstratified 
+#> total mean deviance =  1.8246 
+#> tolerance is fixed at  0.0018 
+#> ntrees resid. dev. 
+#> 50    1.2582 
+#> now adding trees... 
+#> 100   0.9712 
+#> 150   0.7993 
+#> 200   0.6793 
+#> 250   0.5956 
+#> 300   0.5357 
+#> 350   0.4941 
+#> 400   0.4623 
+#> 450   0.4384 
+#> 500   0.4196 
+#> 550   0.4053 
+#> 600   0.3924 
+#> 650   0.3831 
+#> 700   0.3767 
+#> 750   0.3723 
+#> 800   0.3674 
+#> 850   0.3628 
+#> 900   0.3594 
+#> 950   0.3566 
+#> 1000   0.3542 
+#> 1050   0.352 
+#> 1100   0.3506 
+#> 1150   0.3488 
+#> 1200   0.347 
+#> 1250   0.3458 
+#> 1300   0.3453 
+#> 1350   0.3446 
+#> 1400   0.3441 
+#> 1450   0.343 
+#> 1500   0.3418 
+#> 1550   0.3411 
+#> 1600   0.3406 
+#> 1650   0.3401 
+#> 1700   0.3389 
+#> 1750   0.3377 
+#> 1800   0.3376 
+#> 1850   0.3368 
+#> 1900   0.336 
+#> 1950   0.3353 
+#> 2000   0.3353 
+#> 2050   0.3348 
+#> 2100   0.3345 
+#> 2150   0.3346 
+#> 2200   0.3345 
+#> 2250   0.3341 
+#> 2300   0.3336 
+#> 2350   0.3334 
+#> 2400   0.3327 
+#> 2450   0.3327 
+#> 2500   0.3323 
+#> 2550   0.3321 
+#> 2600   0.3319 
+#> 2650   0.3317 
+#> 2700   0.3316 
+#> 2750   0.332 
+#> 2800   0.3319 
+#> 2850   0.3316 
+#> 2900   0.3313 
+#> 2950   0.3313 
+#> 3000   0.331 
+#> 3050   0.3309
+```
+
+![](README_files/figure-markdown_github/fit_brt-1.png)
 
     #> 
+    #> mean total deviance = 1.825 
+    #> mean residual deviance = 0.014 
     #>  
-    #>  GBM STEP - version 2.9 
+    #> estimated cv deviance = 0.331 ; se = 0.022 
     #>  
-    #> Performing cross-validation optimisation of a boosted regression tree model 
-    #> for y and using a family of gaussian 
-    #> Using 500 observations and 22 predictors 
-    #> creating 10 initial models of 50 trees 
-    #> 
-    #>  folds are unstratified 
-    #> total mean deviance =  3.246 
-    #> tolerance is fixed at  0.0032 
-    #> ntrees resid. dev. 
-    #> 50    2.4853 
-    #> now adding trees... 
-    #> 100   2.0375 
-    #> 150   1.74 
-    #> 200   1.538 
-    #> 250   1.3928 
-    #> 300   1.2879 
-    #> 350   1.2079 
-    #> 400   1.1414 
-    #> 450   1.0934 
-    #> 500   1.0555 
-    #> 550   1.0242 
-    #> 600   0.9998 
-    #> 650   0.9806 
-    #> 700   0.966 
-    #> 750   0.9475 
-    #> 800   0.9374 
-    #> 850   0.9296 
-    #> 900   0.9236 
-    #> 950   0.9176 
-    #> 1000   0.9118 
-    #> 1050   0.9072 
-    #> 1100   0.9036 
-    #> 1150   0.8997 
-    #> 1200   0.8975 
-    #> 1250   0.8959 
-    #> 1300   0.8946 
-    #> 1350   0.8926 
-    #> 1400   0.8912 
-    #> 1450   0.8894 
-    #> 1500   0.8896 
-    #> 1550   0.889 
-    #> 1600   0.8889 
-    #> 1650   0.8882 
-    #> 1700   0.8871 
-    #> 1750   0.8861 
-    #> 1800   0.8854 
-    #> 1850   0.8843 
-    #> 1900   0.8835 
-    #> 1950   0.8828 
-    #> 2000   0.8825 
-    #> 2050   0.8818 
-    #> 2100   0.8807 
-    #> 2150   0.8798 
-    #> 2200   0.8787 
-    #> 2250   0.8786 
-    #> 2300   0.8773 
-    #> 2350   0.8781 
-    #> 2400   0.8785 
-    #> 2450   0.8794 
-    #> 2500   0.8793 
-    #> 2550   0.8799 
-    #> 2600   0.8787 
-    #> 2650   0.8791 
-    #> 2700   0.8789 
-    #> 2750   0.8795
+    #> training data correlation = 0.996 
+    #> cv correlation =  0.908 ; se = 0.009 
+    #>  
+    #> elapsed time -  0.27 minutes
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-1.png)
+    # predictions from brt across landscape
+    pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
 
-    #> 
-    #> mean total deviance = 3.246 
-    #> mean residual deviance = 0.067 
-    #>  
-    #> estimated cv deviance = 0.877 ; se = 0.083 
-    #>  
-    #> training data correlation = 0.99 
-    #> cv correlation =  0.86 ; se = 0.01 
-    #>  
-    #> elapsed time -  0.24 minutes
+    # variable importance
+    var_imp <- summary(brt)
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-2.png)
+![](README_files/figure-markdown_github/fit_brt-2.png)
+
+``` r
+# ---------------------------------------
+# Fit model using INLA
+# ---------------------------------------
+
+# USE TOP 5 MOST IMPORTANT VARIABLES FROM BRT
+top_vars <- var_imp$var[1:5]
+
+# covert data to spatial object
+simdat_sf <- st_as_sf(simdat, coords = c("Lon","Lat"),remove = FALSE)
+dat_sf <- st_as_sf(dat, coords = c("Lon","Lat"),remove = FALSE)
+
+# make a two extension hulls and mesh for spatial model
+hull <- fm_extensions(
+  simdat_sf
+)
+
+# Spatial mesh
+mesh_spatial <- fm_mesh_2d_inla(
+  boundary = hull, 
+  max.edge = c(5, 10),
+  cutoff = 2
+)
+
+# Controls the 'residual spatial field'.  This can be adjusted to create smoother surfaces.
+prior_range <- c(1, 0.1)   # 10% chance range is smaller than 1
+prior_sigma <- c(1,0.1)    # 10% chance sd is larger than 1
+matern_coarse <- inla.spde2.pcmatern(mesh_spatial,
+                                     prior.range = prior_range, 
+                                     prior.sigma = prior_sigma
+)
+
+# How much shrinkage should be applied to covariate effects?
+sd_linear <- 0.1  
+prec_linear <-  c(1/sd_linear^2,1/(sd_linear/2)^2)
+
+# Model formula
+model_components = as.formula(paste0('~
+            Intercept(1)+
+            spde_coarse(main = geometry, model = matern_coarse)+',
+            paste0("Beta1_",top_vars,'(1,model="linear", mean.linear = 0, prec.linear = ', prec_linear[1],')', collapse = " + ")))
+
+model_formula= as.formula(paste0('y ~
+                  Intercept +
+                  spde_coarse +',
+                  paste0("Beta1_",top_vars,'*',top_vars, collapse = " + ")))
+
+fit_INLA <- NULL
+while(is.null(fit_INLA)){
+  
+  fit_model <- function(){
+    tryCatch(expr = {bru(components = model_components,
+                         like(family = "gaussian",
+                              formula = model_formula,
+                              data = dat_sf),
+                         
+                         options = list(control.compute = list(waic = FALSE, cpo = FALSE),
+                                        bru_verbose = 4))},
+             error = function(e){NULL})
+  }
+  fit_INLA <- fit_model()
+  
+  if ("try-error" %in% class(fit_INLA)) fit_INLA <- NULL
+}
+
+# Prediction
+pred_formula = as.formula(paste0(' ~
+                  Intercept +
+                  spde_coarse +',paste0("Beta1_",top_vars,'*',top_vars, collapse = " + ")))
+
+# Note that predictions are initially on log scale
+pred_inla <- generate(fit_INLA,
+                      simdat_sf,
+                      formula =  pred_formula,
+                      n.samples = 1000)
+
+pred_mean_inla <- apply(pred_inla,2,mean)
+
+pred_inla <- apply(pred_inla,1,mean)
+```
 
 ## Repeated simulations
 
