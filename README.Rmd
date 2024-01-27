@@ -324,7 +324,7 @@ cor_brt <- cor(simdat$pred_brt,simdat$y)
 cor_inla <- cor(simdat$pred_inla,simdat$y)
 ```
 
-The RMSE for the BRT surface is `r round(RMSE_brt,2)`, while the RMSE for the INLA surface is `r round(RMSE_inla,2)`. Thus, in this simulation, the RMSE from the Bayesian model was `r round(100*(RMSE_inla- RMSE_brt)/RMSE_brt,2)`% lower than the model fit using BRT.
+The RMSE for the BRT surface is `r round(RMSE_brt,2)`, while the RMSE for the INLA surface is `r round(RMSE_inla,2)`. Thus, in this simulation, the RMSE from the Bayesian model was `r -round(100*(RMSE_inla- RMSE_brt)/RMSE_brt,2)`% lower than the model fit using BRT.
 
 Additionally, the correlation between the true surface and the prediction from BRT was `r round(cor_brt,2)`.  The correlation for the Bayesian model prediction was `r round(cor_inla,2)`.
 
@@ -555,9 +555,9 @@ mean(results$RMSE_inla < results$RMSE_brt) # 0.97
 mean(results$cor_inla > results$cor_brt) # 0.97
 ```
 
-The Bayesian model resulted in lower RMSE for `r round(mean(results$RMSE_inla < results$RMSE_brt),2)`% of simulations.  
+The Bayesian model resulted in lower RMSE for `r 100*round(mean(results$RMSE_inla < results$RMSE_brt),2)`% of simulations.  
 
-Additionally, predictions from the Bayesian model had a higher correlation with the true response surface in `r round(mean(results$cor_inla > results$cor_brt),2)`% of simulations.
+Additionally, predictions from the Bayesian model had a higher correlation with the true response surface in `r 100*round(mean(results$cor_inla > results$cor_brt),2)`% of simulations.
 
 # Conclusions
 

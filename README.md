@@ -246,7 +246,7 @@ cor_inla <- cor(simdat$pred_inla,simdat$y)
 
 The RMSE for the BRT surface is 0.55, while the RMSE for the INLA
 surface is 0.33. Thus, in this simulation, the RMSE from the Bayesian
-model was -40.87% lower than the model fit using BRT.
+model was 40.87% lower than the model fit using BRT.
 
 Additionally, the correlation between the true surface and the
 prediction from BRT was 0.91. The correlation for the Bayesian model
@@ -273,10 +273,10 @@ Results are illustrated below.
     #> [1] 0.9733333
     #> [1] 0.9733333
 
-The Bayesian model resulted in lower RMSE for 0.97% of simulations.
+The Bayesian model resulted in lower RMSE for 97% of simulations.
 
 Additionally, predictions from the Bayesian model had a higher
-correlation with the true response surface in 0.97% of simulations.
+correlation with the true response surface in 97% of simulations.
 
 # Conclusions
 
