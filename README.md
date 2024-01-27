@@ -140,6 +140,10 @@ var_imp <- summary(brt)
 
 ![](README_files/figure-markdown_github/fit_brt-1.png)
 
+The top 5 most important variables (in this case Cov_9, Cov_8, Cov_10,
+Cov_5, Cov_7) were then included in a Bayesian species distribution
+model, fit using the `inlabru` package in R.
+
 ``` r
 
 # ---------------------------------------
@@ -217,8 +221,7 @@ pred_inla <- generate(fit_INLA,
                       formula =  pred_formula,
                       n.samples = 1000)
 
-pred_mean_inla <- apply(pred_inla,2,mean)
-
+# Predicted counts for every pixel on the landscape
 pred_inla <- apply(pred_inla,1,mean)
 ```
 
