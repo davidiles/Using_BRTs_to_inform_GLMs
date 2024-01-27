@@ -147,17 +147,11 @@ print(response_plot)
 
 ```
 
+We then simulate a survey of the species across the landscape.  We assume there were 500 surveys conducted.  At each survey location, the response variable is recorded, along with covariate information.  
 
-```{r echo = FALSE, cache = TRUE}
+*However*, we assume that the surveyor does not record the first 3 covariates.  Thus, there are several spatially autocorrelated covariates that are affecting the species distribution but which cannot be (or have not been) measured.  Below, we illustrate the survey locations across the landscape, and the table shows the first several rows of data available for analysis:
 
-simdat <- simdat %>% mutate(y = y) %>% relocate(Lat,Lon,y)
-
-# Map of response variable
-ggplot(simdat)+
-  geom_raster(aes(x = Lon, y = Lat, fill = y))+
-  scale_fill_gradientn(colors = viridis(10))+
-  theme_bw()
-
+```{r analysis_data_example, echo = FALSE, fig.width=6, fig.height=6, }
 # Assume we cannot measure three covariates (drop them from dataframe)
 simdat <- simdat %>% dplyr::select(-Cov_1,-Cov_2,-Cov_3)
 
@@ -172,11 +166,21 @@ dat <- sample_n(simdat, n_survey, replace = TRUE)
 # Add observation error
 dat$y <- dat$y + rnorm(nrow(dat),0,0.1)
 
-ggplot(simdat)+
+survey_plot <- ggplot(simdat)+
   geom_raster(aes(x = Lon, y = Lat, fill = y))+
   scale_fill_gradientn(colors = viridis(10))+
   geom_jitter(data = dat, aes(x = Lon, y = Lat))+
   theme_bw()
+print(survey_plot)
+
+print(head(dat))
+
+```
+
+
+assume the following 
+
+```{r echo = FALSE, cache = TRUE}
 
 # ---------------------------------------
 # Fit BRT and generate landscape predictions

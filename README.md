@@ -72,13 +72,49 @@ resulting species distribution is shown below:
 
 ![](README_files/figure-markdown_github/species_distribution-1.png)
 
-## Repeated simulations
+We then simulate a survey of the species across the landscape. We assume
+there were 500 surveys conducted. At each survey location, the response
+variable is recorded, along with covariate information.
 
-Since the result above might have been a weird and/or unrepresentative
-result, we need to re-run the simulation above many times to see how
-consistently a Bayesian model improves the model fit.
+*However*, we assume that the surveyor does not record the first 3
+covariates. Thus, there are several spatially autocorrelated covariates
+that are affecting the species distribution but which cannot be (or have
+not been) measured. Below, we illustrate the survey locations across the
+landscape, and the table shows the first several rows of data available
+for analysis:
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-1.png)![](README_files/figure-markdown_github/unnamed-chunk-1-2.png)
+![](README_files/figure-markdown_github/analysis_data_example-1.png)
+
+    #>   Lat Lon          y       Cov_4        Cov_5      Cov_6       Cov_7      Cov_8
+    #> 1  61   7 -0.9388965  0.47371046 -2.012667549 -0.2829903 -1.16772021  0.2359831
+    #> 2   6   6  0.0880656  0.08786953 -0.779571566  0.1395168 -0.29217859  1.4124288
+    #> 3  52   2  1.1803392  1.59067642  0.490070393 -1.0305699 -1.55478000  0.1545154
+    #> 4   7  83 -0.4787807 -0.62514224  0.763407851  0.7344660  1.53270413 -0.9027226
+    #> 5  42  11  0.9042171 -0.41232338  0.171708931 -0.9473261 -0.03370702 -1.5930700
+    #> 6  95  48 -3.0299608 -0.42607442 -0.002415646  1.3466899  0.71450321  0.8968242
+    #>        Cov_9      Cov_10     Cov_11     Cov_12     Cov_13      Cov_14
+    #> 1  0.9499256  1.82300818  1.5894835 -0.8693502  0.3135130 -0.45294039
+    #> 2 -0.5130206  0.46948829 -0.7856515 -1.0559092  1.2190467  0.86498155
+    #> 3 -0.1491359  2.23220824 -0.4271634  0.6443190  0.2871630 -0.03919319
+    #> 4 -1.8372636 -0.01025496 -0.5114358  0.5753550 -0.6666246  1.41642086
+    #> 5 -0.4806327 -0.04208725  2.2028051  0.8751997  0.5978097  0.84376483
+    #> 6  0.8647323  0.18479181 -1.3026645  0.2773482 -0.4220347 -0.19650393
+    #>       Cov_15      Cov_16     Cov_17     Cov_18      Cov_19     Cov_20
+    #> 1  0.7315646  0.07802433 -1.0822567  0.8897636 -1.15119400 -0.3856629
+    #> 2  0.5810093 -0.62354090 -1.6611011  1.6371258 -1.12044977 -0.7050954
+    #> 3  0.5012458  0.42933319 -0.6853281  0.1493396 -0.74676060  0.5553814
+    #> 4 -0.5534754 -0.41033859  0.3011067 -0.3891386 -1.04513602  0.4958546
+    #> 5 -2.5225031  1.66733837 -0.9096757 -0.5464115  0.67572515 -0.2636746
+    #> 6 -3.1434381 -0.39819112 -0.2348654  0.8877313  0.05202036 -0.7036159
+    #>        Cov_21      Cov_22     Cov_23      Cov_24     Cov_25
+    #> 1 -2.26643178 -1.74459119  1.2621166 -1.28951118  0.1018613
+    #> 2  1.33879946  0.22336397 -1.3954533  0.90879809  1.6518420
+    #> 3  0.01207982 -0.09084017  0.6222731 -0.03161778  1.7633580
+    #> 4  1.90390100  0.63295170  1.3754519  0.79527414  1.3003943
+    #> 5 -0.81048963  1.64976701 -0.9721220 -0.12403955 -0.6672910
+    #> 6 -0.42723334 -1.25195958 -0.1063610  0.15618033 -0.7955136
+
+assume the following
 
     #> 
     #>  
@@ -150,7 +186,7 @@ consistently a Bayesian model improves the model fit.
     #> 2700   0.8789 
     #> 2750   0.8795
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-3.png)
+![](README_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
     #> 
     #> mean total deviance = 3.246 
@@ -161,234 +197,23 @@ consistently a Bayesian model improves the model fit.
     #> training data correlation = 0.99 
     #> cv correlation =  0.86 ; se = 0.01 
     #>  
-    #> elapsed time -  0.23 minutes
+    #> elapsed time -  0.24 minutes
 
-![](README_files/figure-markdown_github/unnamed-chunk-1-4.png)
+![](README_files/figure-markdown_github/unnamed-chunk-1-2.png)
 
-``` r
-results <- data.frame()
+## Repeated simulations
 
-for (rep in 1:150){
-  
-  # Load if file already exists
-  if (file.exists("output/results.RDS")) results <- readRDS("output/results.RDS")
-  
-  if (nrow(results)>=150) break
-  
-  # ----------------------------------------
-  # Simulate landscape with 25 spatially autocorrelated covariates
-  # ----------------------------------------
-  
-  n_var <- 25
-  simdat <- expand.grid(Lat = seq(0,100), Lon = seq(0,100))
-  
-  for (i in 1:n_var){
-    grid <- list(x = seq(0,100), y = seq(0,100))
-    obj1 <- matern.image.cov(grid=grid, aRange = runif(1,1,10) , smoothness = runif(1,0.5,1), setup=TRUE)
-    simcov <- sim.rf(obj1) %>% reshape2::melt()
-    simdat <- cbind(simdat,simcov$value)
-  }
-  
-  colnames(simdat)[3:ncol(simdat)] <- paste0("Cov_",1:n_var)
-  
-  # ----------------------------------------
-  # Simulate response variable, which depends on first 10 covariates
-  # ----------------------------------------
-  
-  # Covariate effects
-  coefs <- rep(0,n_var)
-  coefs[1:10] <- runif(10,-1,1) # Beta coefficients for first 10 covariates
-  coefs <- matrix(coefs,ncol=1)
-  
-  # Response variable
-  y <- as.matrix(simdat[,3:ncol(simdat)]) %*% coefs
-  
-  simdat <- simdat %>% mutate(y = y) %>% relocate(Lat,Lon,y)
-  
-  # Map of response variable
-  ggplot(simdat)+
-    geom_raster(aes(x = Lon, y = Lat, fill = y))+
-    scale_fill_gradientn(colors = viridis(10))+
-    theme_bw()
-  
-  # Assume we cannot measure three covariates (drop them from dataframe)
-  simdat <- simdat %>% dplyr::select(-Cov_1,-Cov_2,-Cov_3)
-  
-  # ----------------------------------------
-  # Select 500 survey locations
-  # ----------------------------------------
-  
-  n_survey <- 500
-  
-  dat <- sample_n(simdat, n_survey, replace = TRUE)
-  
-  # Add observation error
-  dat$y <- dat$y + rnorm(nrow(dat),0,0.1)
-  
-  ggplot(simdat)+
-    geom_raster(aes(x = Lon, y = Lat, fill = y))+
-    scale_fill_gradientn(colors = viridis(10))+
-    geom_jitter(data = dat, aes(x = Lon, y = Lat))+
-    theme_bw()
-  
-  # ---------------------------------------
-  # Fit BRT and generate landscape predictions
-  # ---------------------------------------
-  
-  brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
-                  family = "gaussian", tree.complexity = 5,
-                  learning.rate = 0.01, bag.fraction = 0.5)
-  
-  # predictions from brt across landscape
-  pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
-  
-  # variable importance
-  var_imp <- summary(brt)
-  
-  # ---------------------------------------
-  # Fit model using INLA
-  # ---------------------------------------
-  
-  # USE TOP 5 MOST IMPORTANT VARIABLES FROM BRT
-  top_vars <- var_imp$var[1:5]
-  
-  # covert data to spatial object
-  simdat_sf <- st_as_sf(simdat, coords = c("Lon","Lat"),remove = FALSE)
-  dat_sf <- st_as_sf(dat, coords = c("Lon","Lat"),remove = FALSE)
-  
-  # make a two extension hulls and mesh for spatial model
-  hull <- fm_extensions(
-    simdat_sf
-  )
-  
-  # Spatial mesh
-  mesh_spatial <- fm_mesh_2d_inla(
-    boundary = hull, 
-    max.edge = c(5, 10),
-    cutoff = 2
-  )
-  
-  # Controls the 'residual spatial field'.  This can be adjusted to create smoother surfaces.
-  prior_range <- c(1, 0.1)   # 10% chance range is smaller than 1
-  prior_sigma <- c(1,0.1)    # 10% chance sd is larger than 1
-  matern_coarse <- inla.spde2.pcmatern(mesh_spatial,
-                                       prior.range = prior_range, 
-                                       prior.sigma = prior_sigma
-  )
-  
-  # How much shrinkage should be applied to covariate effects?
-  sd_linear <- 0.1  
-  prec_linear <-  c(1/sd_linear^2,1/(sd_linear/2)^2)
-  
-  # Model formula
-  model_components = as.formula(paste0('~
-            Intercept(1)+
-            spde_coarse(main = geometry, model = matern_coarse)+',
-            paste0("Beta1_",top_vars,'(1,model="linear", mean.linear = 0, prec.linear = ', prec_linear[1],')', collapse = " + ")))
-  
-  model_formula= as.formula(paste0('y ~
-                  Intercept +
-                  spde_coarse +',
-                  paste0("Beta1_",top_vars,'*',top_vars, collapse = " + ")))
-  
-  fit_INLA <- NULL
-  while(is.null(fit_INLA)){
-    
-    fit_model <- function(){
-      tryCatch(expr = {bru(components = model_components,
-                           like(family = "gaussian",
-                                formula = model_formula,
-                                data = dat_sf),
-                           
-                           options = list(control.compute = list(waic = FALSE, cpo = FALSE),
-                                          bru_verbose = 4))},
-               error = function(e){NULL})
-    }
-    fit_INLA <- fit_model()
-    
-    if ("try-error" %in% class(fit_INLA)) fit_INLA <- NULL
-  }
-  
-  # Prediction
-  pred_formula = as.formula(paste0(' ~
-                  Intercept +
-                  spde_coarse +',paste0("Beta1_",top_vars,'*',top_vars, collapse = " + ")))
-  
-  # Note that predictions are initially on log scale
-  pred_inla <- generate(fit_INLA,
-                        simdat_sf,
-                        formula =  pred_formula,
-                        n.samples = 1000)
-  
-  pred_mean_inla <- apply(pred_inla,2,mean)
-  
-  pred_inla <- apply(pred_inla,1,mean)
-  
-  # ---------------------------------------
-  # Evaluate quality of model fits; save in results dataframe
-  # ---------------------------------------
-  
-  RMSE_brt <- sqrt(mean((pred_brt - simdat$y)^2))
-  RMSE_inla <- sqrt(mean((pred_inla - simdat$y)^2))
-  
-  results <- rbind(results,data.frame(RMSE_brt = RMSE_brt,
-                                      RMSE_inla = RMSE_inla,
-                                      cor_brt = cor(pred_brt,simdat$y),
-                                      cor_inla = cor(pred_inla,simdat$y)
-  ))
-  
-  # Save results
-  saveRDS(results,"output/results.RDS")
-  
-}
+Since the result above might have been a weird and/or unrepresentative
+result, we need to re-run the simulation above many times to see how
+consistently a Bayesian model improves the model fit.
 
-# ---------------------------------------
-# Load results
-# ---------------------------------------
+We conducted 150 simulations. For each simulation, we stored the Root
+Mean Squared Error and correlation between model predictions and the
+‘true’ (simulated) response surface, y.
 
-results <- readRDS("output/results.RDS")
+Results are illustrated below.
 
-# ---------------------------------------
-# Summarize results; Are GLM predictions better than BRTs?
-# ---------------------------------------
-results$simulation_number <- 1:nrow(results)
+![](README_files/figure-markdown_github/conduct_repeated_simulations-1.png)![](README_files/figure-markdown_github/conduct_repeated_simulations-2.png)
 
-# How much does GAM reduce RMSE?
-results$percent_reduction_RMSE <- 100*(results$RMSE_inla - results$RMSE_brt)/results$RMSE_brt
-
-RMSE_plot <- ggplot(data = results, aes(x = percent_reduction_RMSE))+
-  geom_histogram(fill = "dodgerblue")+
-  geom_vline(xintercept = 0, linetype = 2)+
-  ylab("Frequency\n(number of simulations)")+
-  xlab("Percent reduction in Root Mean Squared Error\n(When fitting INLA after a BRT)")+
-  ggtitle("Does INLA reduce Root Mean Squared Error, compared to BRT?")+
-  theme_bw()
-RMSE_plot
-```
-
-![](README_files/figure-markdown_github/conduct_repeated_simulations-1.png)
-
-``` r
-
-cor_plot <- ggplot(data = results, aes(x = cor_inla - cor_brt))+
-  geom_histogram(fill = "dodgerblue")+
-  geom_vline(xintercept = 0, linetype = 2)+
-  ylab("Frequency\n(number of simulations)")+
-  xlab("Improvement in Correlation\n(When fitting INLA after a BRT)")+
-  ggtitle("Does INLA improve correlation with 'true' density, compared to BRT?")+
-  theme_bw()
-cor_plot
-```
-
-![](README_files/figure-markdown_github/conduct_repeated_simulations-2.png)
-
-``` r
-
-# Percent of simulations where INLA resulted in a lower RMSE:
-mean(results$RMSE_inla < results$RMSE_brt) # 0.97
-#> [1] 0.9733333
-
-# Percent of simulations where INLA resulted in a higher correlation:
-mean(results$cor_inla > results$cor_brt) # 0.97
-#> [1] 0.9733333
-```
+    #> [1] 0.9733333
+    #> [1] 0.9733333
