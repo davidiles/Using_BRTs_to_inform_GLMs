@@ -78,6 +78,7 @@ The plots below illustrate each of the covariates.
 
 ```{r simulate_landscapes, cache=TRUE, fig.width=10, fig.height=10, echo = FALSE}
 
+set.seed(999)
 # ----------------------------------------
 # Simulate landscape with 25 spatially autocorrelated covariates
 # ----------------------------------------
