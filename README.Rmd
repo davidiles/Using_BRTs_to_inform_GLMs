@@ -76,7 +76,7 @@ Since almost all habitat and environmental covariates are spatially autocorrelat
 
 The plots below illustrate each of the covariates.
 
-```{r simulate_landscapes, cache=TRUE, fig.width=10, fig.height=10, include = FALSE}
+```{r simulate_landscapes, cache=TRUE, fig.width=10, fig.height=10, echo = FALSE}
 
 # ----------------------------------------
 # Simulate landscape with 25 spatially autocorrelated covariates
@@ -125,7 +125,8 @@ print(cov_plot_all)
 
 In our simulations, we allow the first 10 covariates to influence the species distribution.  We draw a random 'effect size coefficient' for each variable, then create the species distribution by multiplying each spatial covariate by its effect size, and adding them together.  The resulting species distribution is shown below:
 
-```{r species_distribution, fig.width=6, fig.height=6, include = FALSE}
+```{r species_distribution, fig.width=6, fig.height=6, echo = FALSE}
+
 # Covariate effects
 coefs <- rep(0,n_var)
 coefs[1:10] <- runif(10,-1,1) # Beta coefficients for first 10 covariates
@@ -146,11 +147,8 @@ print(response_plot)
 
 ```
 
-## Repeated simulations
 
-Since the result above might have been a weird and/or unrepresentative result, we need to re-run the simulation above many times to see how consistently a Bayesian model improves the model fit.
-
-```{r}
+```{r echo = FALSE, cache = TRUE}
 
 simdat <- simdat %>% mutate(y = y) %>% relocate(Lat,Lon,y)
 
@@ -276,8 +274,16 @@ pred_inla <- apply(pred_inla,1,mean)
 
 ```
 
+## Repeated simulations
 
-```{r conduct_repeated_simulations}
+Since the result above might have been a weird and/or unrepresentative result, we need to re-run the simulation above many times to see how consistently a Bayesian model improves the model fit.  
+
+We conducted 150 simulations.  For each simulation, we stored the Root Mean Squared Error and correlation between model predictions and the 'true' (simulated) response surface, y. 
+
+Results are illustrated below.
+
+```{r conduct_repeated_simulations, echo = FALSE}
+
 results <- data.frame()
 
 for (rep in 1:150){
