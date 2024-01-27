@@ -549,10 +549,10 @@ cor_plot <- ggplot(data = results, aes(x = cor_inla - cor_brt))+
 print(cor_plot)
 
 # Percent of simulations where INLA resulted in a lower RMSE:
-mean(results$RMSE_inla < results$RMSE_brt) # 0.97
+#mean(results$RMSE_inla < results$RMSE_brt) # 0.97
 
 # Percent of simulations where INLA resulted in a higher correlation:
-mean(results$cor_inla > results$cor_brt) # 0.97
+#mean(results$cor_inla > results$cor_brt) # 0.97
 ```
 
 The Bayesian model resulted in lower RMSE for `r 100*round(mean(results$RMSE_inla < results$RMSE_brt),2)`% of simulations.  
@@ -561,4 +561,8 @@ Additionally, predictions from the Bayesian model had a higher correlation with 
 
 # Conclusions
 
-This analysis suggests that a Bayesian spatial model outperforms a machine learning model 
+This analysis suggests that a Bayesian spatial model outperforms a machine learning model for predicting spatial response surfaces.
+
+In this case, we used the machine learning model to identify the best covariates to consider including in the Bayesian model.  Then, we used the Bayesian model to capture residual spatial autocorrelation in the response surface, beyond that which is explained by explicit covariates.
+
+This approach holds promise for improving species distribution estimates.

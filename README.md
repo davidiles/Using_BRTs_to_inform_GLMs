@@ -270,9 +270,6 @@ Results are illustrated below.
 
 ![](README_files/figure-markdown_github/conduct_repeated_simulations-1.png)![](README_files/figure-markdown_github/conduct_repeated_simulations-2.png)
 
-    #> [1] 0.9733333
-    #> [1] 0.9733333
-
 The Bayesian model resulted in lower RMSE for 97% of simulations.
 
 Additionally, predictions from the Bayesian model had a higher
@@ -281,4 +278,12 @@ correlation with the true response surface in 97% of simulations.
 # Conclusions
 
 This analysis suggests that a Bayesian spatial model outperforms a
-machine learning model
+machine learning model for predicting spatial response surfaces.
+
+In this case, we used the machine learning model to identify the best
+covariates to consider including in the Bayesian model. Then, we used
+the Bayesian model to capture residual spatial autocorrelation in the
+response surface, beyond that which is explained by explicit covariates.
+
+This approach holds promise for improving species distribution
+estimates.
