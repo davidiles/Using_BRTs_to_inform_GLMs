@@ -183,7 +183,7 @@ print(head(dat))
 
 We first analyze the dataset with boosted regression trees, using the following code:
 
-```{r fit_brt, cache = TRUE}
+```{r fit_brt, cache = TRUE, message = FALSE}
 
 # ---------------------------------------
 # Fit BRT and generate landscape predictions
