@@ -3,10 +3,6 @@ title: "Using BRTs to improve Bayesian species distribution models"
 author: "David Iles"
 date: "Generated on `r Sys.Date()`"
 output: 
-  html_document:
-    toc: true
-    toc_depth: 5
-    toc_float: true
   md_document:
     variant: markdown_github
 ---
