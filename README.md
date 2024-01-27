@@ -1,4 +1,48 @@
-# Including Plots
+# Motivation
+
+We want to test if Machine Learning methods and Bayesian models can be
+used in combination to produce better estimates of species
+distributions. Our approach is to:
+
+1.  Fit Boosted Regression Trees (BRTs) to a dataset, which identify the
+    most important covariates for predicting species distributions, then
+
+2.  Use the most important covariates in a Bayesian species distribution
+    model that allows us to propagage uncertainty, and simultaneously
+    accounts for spatial autocorrelation, random effects, and
+    informative priors.
+
+This approach may be an efficient way to “let the data speak for itself”
+in identifying the most important covariates through machine learning,
+after which we can use Bayesian models to properly account for spatial
+autocorrelation and error propagation.
+
+Our main concern is whether this is a form of “double-dipping” from the
+data that will lead to over-fit models that reduce performance.
+
+# Background
+
+Boosted regression tree (BRT) approaches, and machine learning more
+generally, are extremely good at identifying important covariates for
+predicting species distributions. They naturally accommodate complex,
+non-linear, and interacting response functions among multiple
+covariates, and do not suffer from problems with variable collinearity.
+
+However, BRTs cannot include spatial covariation (when the response
+variable at a location is similar to the response variable at nearby
+locations, after accounting for covariates). Additionally, BRTs are not
+well-suited to the inclusion of random effects (e.g., repeated-measures
+data), integrated models (e.g., where multiple response variables with
+different error distributions are affected by a shared process). It can
+also be difficult to properly propagate uncertainty with BRTs, which is
+critical for species status and trend assessments.
+
+Bayesian models are excellent for describing and propagating multiple
+sources of uncertainty, but cannot accommodate large numbers of
+covariates, and can suffer from lack of parameter identifiability when
+multiple covariates are correlated with each other.
+
+Our
 
 You can also embed plots, for example:
 
