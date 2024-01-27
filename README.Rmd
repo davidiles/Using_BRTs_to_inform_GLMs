@@ -50,7 +50,7 @@ We used simulations to examine whether a two-stage approach to fitting models im
 
 ## Simulation example
 
-```{r load_libraries, echo=FALSE}
+```{r load_libraries, echo=FALSE, cache = TRUE}
 
 # ----------------------------------------
 # Libraries
@@ -181,9 +181,9 @@ print(head(dat))
 
 ```
 
-We first analyze the dataset with boosted regression trees, using the following code:
+We first analyze the dataset with boosted regression trees, using the following code.  We also plot variable importance.
 
-```{r fit_brt, cache = TRUE, results = "hide"}
+```{r fit_brt, cache = TRUE, results = "hide",fig.width=6, fig.height=12}
 
 # ---------------------------------------
 # Fit BRT and generate landscape predictions
@@ -191,7 +191,9 @@ We first analyze the dataset with boosted regression trees, using the following 
 
 brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
                 family = "gaussian", tree.complexity = 5,
-                learning.rate = 0.01, bag.fraction = 0.5)
+                learning.rate = 0.01, bag.fraction = 0.5,
+                verbose = FALSE,
+                plot.main = FALSE)
 
 # generate predictions from brt across landscape
 pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
@@ -202,7 +204,8 @@ var_imp <- summary(brt)
 
 
 
-```{r e}
+```{r INLA, cache = TRUE}
+
 # ---------------------------------------
 # Fit model using INLA
 # ---------------------------------------

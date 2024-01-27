@@ -117,7 +117,7 @@ for analysis:
     #> 6  0.3881231 -0.7095361  0.5857132 -0.1842713
 
 We first analyze the dataset with boosted regression trees, using the
-following code:
+following code. We also plot variable importance.
 
 ``` r
 
@@ -127,12 +127,9 @@ following code:
 
 brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
                 family = "gaussian", tree.complexity = 5,
-                learning.rate = 0.01, bag.fraction = 0.5)
-```
-
-![](README_files/figure-markdown_github/fit_brt-1.png)
-
-``` r
+                learning.rate = 0.01, bag.fraction = 0.5,
+                verbose = FALSE,
+                plot.main = FALSE)
 
 # generate predictions from brt across landscape
 pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
@@ -141,9 +138,10 @@ pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response"
 var_imp <- summary(brt)
 ```
 
-![](README_files/figure-markdown_github/fit_brt-2.png)
+![](README_files/figure-markdown_github/fit_brt-1.png)
 
 ``` r
+
 # ---------------------------------------
 # Fit model using INLA
 # ---------------------------------------
