@@ -144,6 +144,10 @@ The top 5 most important variables (in this case Cov_9, Cov_8, Cov_10,
 Cov_5, Cov_7) were then included in a Bayesian species distribution
 model, fit using the `inlabru` package in R.
 
+The model includes a spatially autocorreled random field to account for
+spatial autocorrelation that is not attributable to the measured
+covariates.
+
 ``` r
 
 # ---------------------------------------
@@ -215,15 +219,18 @@ pred_formula = as.formula(paste0(' ~
                   Intercept +
                   spde_coarse +',paste0("Beta1_",top_vars,'*',top_vars, collapse = " + ")))
 
-# Note that predictions are initially on log scale
 pred_inla <- generate(fit_INLA,
                       simdat_sf,
                       formula =  pred_formula,
                       n.samples = 1000)
 
-# Predicted counts for every pixel on the landscape
+# Predicted response for every pixel on the landscape
 pred_inla <- apply(pred_inla,1,mean)
 ```
+
+Below, we compare the ‘true’ response surface (y) with the predicted
+response surfaces estimated from either Boosted Regression Trees (BRTs)
+or with the Bayesian model (INLA).
 
 ## Repeated simulations
 
