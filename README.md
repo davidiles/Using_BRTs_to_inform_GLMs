@@ -162,9 +162,7 @@ simdat_sf <- st_as_sf(simdat, coords = c("Lon","Lat"),remove = FALSE)
 dat_sf <- st_as_sf(dat, coords = c("Lon","Lat"),remove = FALSE)
 
 # make a two extension hulls and mesh for spatial model
-hull <- fm_extensions(
-  simdat_sf
-)
+hull <- fm_extensions(simdat_sf)
 
 # Spatial mesh
 mesh_spatial <- fm_mesh_2d_inla(
@@ -232,15 +230,41 @@ Below, we compare the ‘true’ response surface (y) with the predicted
 response surfaces estimated from either Boosted Regression Trees (BRTs)
 or with the Bayesian model (INLA).
 
+![](README_files/figure-markdown_github/compare_BRT_INLA-1.png)
+
+To evaluate which prediction surface is a better representation of the
+‘true’ response surface on the left, we calculate two metrics: 1) the
+root mean squared error between the prediction and the true surface, and
+2) the correlation between the prediction surface and the true surface.
+
+``` r
+RMSE_brt <- sqrt(mean((simdat$pred_brt - simdat$y)^2))
+RMSE_inla <- sqrt(mean((simdat$pred_inla - simdat$y)^2))
+cor_brt <- cor(simdat$pred_brt,simdat$y)
+cor_inla <- cor(simdat$pred_inla,simdat$y)
+```
+
+The RMSE for the BRT surface is 0.55, while the RMSE for the INLA
+surface is 0.33. Thus, in this simulation, the RMSE from the Bayesian
+model was -40.87% lower than the model fit using BRT.
+
+Additionally, the correlation between the true surface and the
+prediction from BRT was 0.91. The correlation for the Bayesian model
+prediction was 0.97.
+
+These results (as well as visual inspection of the surfaces above)
+illustrate that the Bayesian model resulted in much better predictions
+of the species distribution than the boosted regression tree.
+
 ## Repeated simulations
 
-Since the result above might have been a weird and/or unrepresentative
-result, we need to re-run the simulation above many times to see how
-consistently a Bayesian model improves the model fit.
+Since the result above might have been weird and/or unrepresentative, we
+need to re-run the simulation many times to see how consistently a
+Bayesian model improves the model fit.
 
 We conducted 150 simulations. For each simulation, we stored the Root
 Mean Squared Error and correlation between model predictions and the
-‘true’ (simulated) response surface, y.
+‘true’ response surface (y).
 
 Results are illustrated below.
 
@@ -248,3 +272,13 @@ Results are illustrated below.
 
     #> [1] 0.9733333
     #> [1] 0.9733333
+
+The Bayesian model resulted in lower RMSE for 0.97% of simulations.
+
+Additionally, predictions from the Bayesian model had a higher
+correlation with the true response surface in 0.97% of simulations.
+
+# Conclusions
+
+This analysis suggests that a Bayesian spatial model outperforms a
+machine learning model

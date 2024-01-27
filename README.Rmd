@@ -220,9 +220,7 @@ simdat_sf <- st_as_sf(simdat, coords = c("Lon","Lat"),remove = FALSE)
 dat_sf <- st_as_sf(dat, coords = c("Lon","Lat"),remove = FALSE)
 
 # make a two extension hulls and mesh for spatial model
-hull <- fm_extensions(
-  simdat_sf
-)
+hull <- fm_extensions(simdat_sf)
 
 # Spatial mesh
 mesh_spatial <- fm_mesh_2d_inla(
@@ -289,17 +287,54 @@ pred_inla <- apply(pred_inla,1,mean)
 
 Below, we compare the 'true' response surface (y) with the predicted response surfaces estimated from either Boosted Regression Trees (BRTs) or with the Bayesian model (INLA).
 
-```{r compare_BRT_INLA, cache = TRUE, echo=FALSE,fig.width=6, fig.height=12}
+```{r compare_BRT_INLA, cache = TRUE, echo=FALSE,fig.width=20, fig.height=5}
 simdat$pred_brt <- pred_brt
 simdat$pred_inla <- pred_inla
 
+lim <- range(simdat[,c("y","pred_brt","pred_inla")])
+plot_y <- ggplot(simdat)+
+  geom_raster(aes(x = Lon, y = Lat, fill = y))+
+  scale_fill_gradientn(colors = viridis(10), limits = lim, name = "y")+
+  theme_bw()+
+  ggtitle("True response surface")
+
+plot_brt <- ggplot(simdat)+
+  geom_raster(aes(x = Lon, y = Lat, fill = pred_brt))+
+  scale_fill_gradientn(colors = viridis(10), limits = lim, name = "BRT\nestimate")+
+  theme_bw()+
+  ggtitle("BRT estimate")
+
+plot_inla <- ggplot(simdat)+
+  geom_raster(aes(x = Lon, y = Lat, fill = pred_inla))+
+  scale_fill_gradientn(colors = viridis(10), limits = lim, name = "INLA\nestimate")+
+  theme_bw()+
+  ggtitle("INLA estimate")
+
+compare_plots <- ggarrange(plot_y, plot_brt, plot_inla, nrow=1, align = "hv")
+print(compare_plots)
 ```
+
+
+To evaluate which prediction surface is a better representation of the 'true' response surface on the left, we calculate two metrics: 1) the root mean squared error between the prediction and the true surface, and 2) the correlation between the prediction surface and the true surface.
+
+```{r rmse_cor}
+RMSE_brt <- sqrt(mean((simdat$pred_brt - simdat$y)^2))
+RMSE_inla <- sqrt(mean((simdat$pred_inla - simdat$y)^2))
+cor_brt <- cor(simdat$pred_brt,simdat$y)
+cor_inla <- cor(simdat$pred_inla,simdat$y)
+```
+
+The RMSE for the BRT surface is `r round(RMSE_brt,2)`, while the RMSE for the INLA surface is `r round(RMSE_inla,2)`. Thus, in this simulation, the RMSE from the Bayesian model was `r round(100*(RMSE_inla- RMSE_brt)/RMSE_brt,2)`% lower than the model fit using BRT.
+
+Additionally, the correlation between the true surface and the prediction from BRT was `r round(cor_brt,2)`.  The correlation for the Bayesian model prediction was `r round(cor_inla,2)`.
+
+These results (as well as visual inspection of the surfaces above) illustrate that the Bayesian model resulted in much better predictions of the species distribution than the boosted regression tree.
 
 ## Repeated simulations
 
-Since the result above might have been a weird and/or unrepresentative result, we need to re-run the simulation above many times to see how consistently a Bayesian model improves the model fit.  
+Since the result above might have been weird and/or unrepresentative, we need to re-run the simulation many times to see how consistently a Bayesian model improves the model fit.  
 
-We conducted 150 simulations.  For each simulation, we stored the Root Mean Squared Error and correlation between model predictions and the 'true' (simulated) response surface, y. 
+We conducted 150 simulations.  For each simulation, we stored the Root Mean Squared Error and correlation between model predictions and the 'true' response surface (y). 
 
 Results are illustrated below.
 
@@ -502,7 +537,7 @@ RMSE_plot <- ggplot(data = results, aes(x = percent_reduction_RMSE))+
   xlab("Percent reduction in Root Mean Squared Error\n(When fitting INLA after a BRT)")+
   ggtitle("Does INLA reduce Root Mean Squared Error, compared to BRT?")+
   theme_bw()
-RMSE_plot
+print(RMSE_plot)
 
 cor_plot <- ggplot(data = results, aes(x = cor_inla - cor_brt))+
   geom_histogram(fill = "dodgerblue")+
@@ -511,7 +546,7 @@ cor_plot <- ggplot(data = results, aes(x = cor_inla - cor_brt))+
   xlab("Improvement in Correlation\n(When fitting INLA after a BRT)")+
   ggtitle("Does INLA improve correlation with 'true' density, compared to BRT?")+
   theme_bw()
-cor_plot
+print(cor_plot)
 
 # Percent of simulations where INLA resulted in a lower RMSE:
 mean(results$RMSE_inla < results$RMSE_brt) # 0.97
@@ -519,3 +554,11 @@ mean(results$RMSE_inla < results$RMSE_brt) # 0.97
 # Percent of simulations where INLA resulted in a higher correlation:
 mean(results$cor_inla > results$cor_brt) # 0.97
 ```
+
+The Bayesian model resulted in lower RMSE for `r round(mean(results$RMSE_inla < results$RMSE_brt),2)`% of simulations.  
+
+Additionally, predictions from the Bayesian model had a higher correlation with the true response surface in `r round(mean(results$cor_inla > results$cor_brt),2)`% of simulations.
+
+# Conclusions
+
+This analysis suggests that a Bayesian spatial model outperforms a machine learning model 
