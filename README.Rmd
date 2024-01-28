@@ -30,7 +30,7 @@ We want to test if Machine Learning methods and Bayesian models can be used in c
 
 1) Fit Boosted Regression Trees (BRTs) to a dataset, which identify the most important covariates for predicting species distributions, then
 
-2) Use the most important covariates in a Bayesian species distribution model that allows us to propagage uncertainty, and simultaneously accounts for spatial autocorrelation, random effects, and informative priors.
+2) Use the most important covariates in a Bayesian species distribution model that allows us to propagate uncertainty, and simultaneously accounts for spatial autocorrelation, random effects, and informative priors.
 
 This approach may be an efficient way to "let the data speak for itself" in identifying the most important covariates through machine learning, after which we can use Bayesian models to properly account for spatial autocorrelation and error propagation.  On the other hand, this may be a form of "double-dipping" from the data that will lead to over-fit models that reduce performance.  
 
