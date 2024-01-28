@@ -143,10 +143,11 @@ Variable importance scores can be extracted from boosted regression tree
 analyses using the `summary` command. A plot of relative variable
 importance is shown below:
 
-![](README_files/figure-markdown_github/var_importance-1.png) The top 5
-most important variables (in this case Cov_5, Cov_7, Cov_8, Cov_6,
-Cov_9) were then included in a Bayesian species distribution model, fit
-using the `inlabru` package in R.
+![](README_files/figure-markdown_github/var_importance-1.png)
+
+The top 5 most important variables (in this case Cov_5, Cov_7, Cov_8,
+Cov_6, Cov_9) were then included in a Bayesian species distribution
+model, fit using the `inlabru` package in R.
 
 The model includes a spatially autocorreled random field to account for
 spatial autocorrelation that is not attributable to the measured

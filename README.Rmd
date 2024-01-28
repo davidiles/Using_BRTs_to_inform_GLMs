@@ -220,6 +220,7 @@ var_imp_plot <- ggplot(var_imp, aes(x = rel.inf, y = var))+
 
 print(var_imp_plot)
 ```
+
 The top 5 most important variables (in this case `r var_imp$var[1:5]`) were then included in a Bayesian species distribution model, fit using the `inlabru` package in R.
 
 The model includes a spatially autocorreled random field to account for spatial autocorrelation that is not attributable to the measured covariates.
