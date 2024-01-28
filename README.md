@@ -118,9 +118,30 @@ table shows the first several rows of data available for analysis:
     #> 6 -0.08299207 -0.1941776 1.18069725  0.94158401 -0.0007718658
 
 We first analyze the dataset with boosted regression trees, using the
-following code. We also plot variable importance.
+following code.
 
-![](README_files/figure-markdown_github/fit_brt-1.png)
+``` r
+
+# ---------------------------------------
+# Fit BRT and generate landscape predictions
+# ---------------------------------------
+
+brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
+                family = "gaussian", tree.complexity = 5,
+                learning.rate = 0.01, bag.fraction = 0.5,
+                verbose = FALSE,
+                plot.main = FALSE)
+
+# generate predictions from brt across landscape
+pred_brt <- predict(brt, simdat,n.trees=brt$gbm.call$best.trees, type="response")
+
+# variable importance
+var_imp <- summary(brt)
+```
+
+Variable importance scores can be extracted from boosted regression tree
+analyses using the `summary` command. A plot of relative variable
+importance is shown below:
 
 The top 5 most important variables (in this case Cov_5, Cov_7, Cov_8,
 Cov_6, Cov_9) were then included in a Bayesian species distribution
