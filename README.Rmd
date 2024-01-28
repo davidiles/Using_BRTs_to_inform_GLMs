@@ -78,7 +78,7 @@ The plots below illustrate each of the covariates.
 
 ```{r simulate_landscapes, cache=TRUE, fig.width=10, fig.height=10, echo = FALSE}
 
-set.seed(222)
+set.seed(555)
 
 # ----------------------------------------
 # Simulate landscape with 25 spatially autocorrelated covariates
@@ -208,8 +208,17 @@ var_imp <- summary(brt)
 
 Variable importance scores can be extracted from boosted regression tree analyses using the `summary` command.  A plot of relative variable importance is shown below:
 
-```{r var_importance}
+```{r var_importance, echo = FALSE, results = "hide",fig.width=6, fig.height=6}
 
+var_imp$var <- factor(var_imp$var, levels = rev(var_imp$var))
+var_imp_plot <- ggplot(var_imp, aes(x = rel.inf, y = var))+
+  geom_bar(stat = "identity")+
+  xlab("Relative importance")+
+  ylab("Variable name")+
+  ggtitle("Relative variable importance based on BRT")+
+  theme_bw()
+
+print(var_imp_plot)
 ```
 The top 5 most important variables (in this case `r var_imp$var[1:5]`) were then included in a Bayesian species distribution model, fit using the `inlabru` package in R.
 
@@ -238,7 +247,7 @@ mesh_spatial <- fm_mesh_2d_inla(
   cutoff = 2
 )
 
-# Controls the 'residual spatial field'.  This can be adjusted to create smoother surfaces.
+# Controls the 'residual spatial field'
 prior_range <- c(1, 0.1)   # 10% chance range is smaller than 1
 prior_sigma <- c(1,0.1)    # 10% chance sd is larger than 1
 matern_coarse <- inla.spde2.pcmatern(mesh_spatial,
@@ -246,7 +255,7 @@ matern_coarse <- inla.spde2.pcmatern(mesh_spatial,
                                      prior.sigma = prior_sigma
 )
 
-# How much shrinkage should be applied to covariate effects?
+# Priors/shrinkage on covariate effects
 sd_linear <- 0.1  
 prec_linear <-  c(1/sd_linear^2,1/(sd_linear/2)^2)
 
@@ -289,9 +298,8 @@ pred_inla <- generate(fit_INLA,
                       formula =  pred_formula,
                       n.samples = 1000)
 
-# Predicted response for every pixel on the landscape
+# Mean predicted response for every pixel on the landscape
 pred_inla <- apply(pred_inla,1,mean)
-
 ```
 
 Below, we compare the 'true' response surface (y) with the predicted response surfaces estimated from either Boosted Regression Trees (BRTs) or with the Bayesian model (INLA).
