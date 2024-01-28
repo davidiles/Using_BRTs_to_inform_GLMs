@@ -75,46 +75,47 @@ resulting species distribution is shown below:
 ![](README_files/figure-markdown_github/species_distribution-1.png)
 
 We then simulate a survey of the species across the landscape. We assume
-there were 500 surveys conducted. At each survey location, the response
+there were 250 surveys conducted. At each survey location, the response
 variable is recorded, along with covariate information.
 
-*However*, we assume that the surveyor does not record the first 3
+However, we assume that the surveyor does not record the first 3
 covariates. Thus, there are several spatially autocorrelated covariates
 that are affecting the species distribution but which cannot be (or have
-not been) measured. Below, we illustrate the survey locations across the
-landscape, and the table shows the first several rows of data available
-for analysis:
+not been) measured.
+
+Below, we illustrate the survey locations across the landscape, and the
+table shows the first several rows of data available for analysis:
 
 ![](README_files/figure-markdown_github/analysis_data_example-1.png)
 
-    #>   Lat Lon          y        Cov_4      Cov_5      Cov_6       Cov_7      Cov_8
-    #> 1   2  66  2.0495142 -0.901953694 -1.4985131  0.2341379 -0.03985908 -0.4821705
-    #> 2  48  47 -0.5083888  0.004285082  0.8172039  0.2998487  0.78643462 -0.4229501
-    #> 3  53   9  3.0750485  0.648549641 -0.0804429  0.5816619  0.53370855 -1.5089465
-    #> 4  71   9 -2.5447837 -0.563256878  1.2399145 -0.2715009 -0.50794293  0.3869722
-    #> 5  96  69  0.9069443  0.590791108 -0.5961984 -1.1733251 -0.64520841  0.4809468
-    #> 6  85  50  0.7054334  0.502205997  0.2020600 -0.1868524 -0.71287402  0.8358009
-    #>        Cov_9     Cov_10     Cov_11     Cov_12     Cov_13     Cov_14     Cov_15
-    #> 1 -1.1860667 -0.3303689 -2.3267907  1.6707094  0.1581712  1.1997851 -1.3162588
-    #> 2 -0.4837238  0.4692777  0.7606698 -1.4944769 -0.5985132  0.1899987  0.2776687
-    #> 3  0.3458464  0.3804128 -0.9161369  0.3545537 -0.4932136 -1.4562203  0.7007146
-    #> 4 -0.5331179 -1.0022800 -0.2475285  0.2923376 -1.6176345  2.0783722  0.4759553
-    #> 5 -1.4586465 -0.7328391  0.3889186  2.0949696  1.2264297  0.3911868  0.9489299
-    #> 6 -0.9678242 -0.2898641 -0.6905166  0.3528309  1.3029215  0.5209788  0.7689862
-    #>       Cov_16     Cov_17     Cov_18      Cov_19        Cov_20     Cov_21
-    #> 1  0.2811616  1.4789564  0.1886540  0.09012279  0.0240304369 -0.2294860
-    #> 2  1.7296375 -0.8177915 -1.1860870  1.65244258 -0.0323000238 -0.7454279
-    #> 3 -1.0365798  1.5916521  0.1645963 -0.32312816 -0.5002041507 -0.2718537
-    #> 4 -0.3975367 -1.0308267 -0.5202737 -1.41655229 -0.7373499325 -0.9779456
-    #> 5  0.6245485 -0.3242176  0.2187872  0.79536795 -0.0008460594  0.2086748
-    #> 6  0.4789907  0.4195511 -1.0187512 -1.68531919 -2.1020883008  0.1844929
-    #>        Cov_22      Cov_23      Cov_24     Cov_25
-    #> 1 -0.88275848 -0.02194099  0.02022157 -0.1894621
-    #> 2 -0.51343002 -0.87629320 -0.40628747  0.5247128
-    #> 3 -0.08751978 -0.55407738 -1.06988316 -0.4459445
-    #> 4 -0.16506843 -1.88513974 -0.27011804 -0.2635481
-    #> 5  2.04258900  1.61786152  0.77887162 -0.2015537
-    #> 6  0.69133618  0.66022416  0.57504003 -0.7379946
+    #>   Lat Lon          y      Cov_4       Cov_5       Cov_6       Cov_7      Cov_8
+    #> 1  37  63  0.5013765  0.0484735  0.91672228 -0.19278552  1.28318749  0.3451192
+    #> 2  95  39  3.8836887  0.3211503  0.98034182  0.71627686 -0.42615957  1.9318356
+    #> 3  37  58 -0.4299123  1.8819539 -0.03973159  0.55899162  1.06866656 -0.3795945
+    #> 4  49  81  0.1747588  1.0542864  0.66102782 -1.68547570  1.25568176  0.4802736
+    #> 5  11  78  0.2713122 -0.4961796 -0.19733051  0.08498255  0.07833561  0.9647041
+    #> 6  23  24 -1.5573140  1.6301771 -0.19742650  1.18198604  1.52050155 -0.9919384
+    #>        Cov_9     Cov_10     Cov_11      Cov_12     Cov_13     Cov_14
+    #> 1  0.6689385 -0.2520693 -1.3880632 -0.66988743 -2.4338229 -0.6196217
+    #> 2 -1.2107203 -0.8733225 -0.5119556  1.58502343 -0.1682873 -0.6361183
+    #> 3  0.5868350  0.4863558 -1.2933657 -0.32220352 -0.1204812  0.8270296
+    #> 4  1.1623480 -0.7279297  1.2199893 -0.77293112  0.4553692  0.6689714
+    #> 5  0.7729302  0.1640673 -0.1231039  0.06361641  1.1639337  0.7103155
+    #> 6  0.9097158 -1.1592423 -1.8998907 -1.91608930  1.3870908  1.0318110
+    #>        Cov_15     Cov_16     Cov_17      Cov_18     Cov_19      Cov_20
+    #> 1 -1.01421525 -1.6036304  0.3018177  0.15861885  0.9469076  0.55148793
+    #> 2 -0.52843938  0.9769187  0.8495705  0.82415212 -0.8791933  1.34989805
+    #> 3 -0.49255969 -1.9903224 -0.3468766  1.36533404  1.1645482 -0.32265523
+    #> 4 -1.31861794 -0.3795740 -1.1232444 -0.03694234  1.1533796 -0.76158481
+    #> 5  0.33750643  0.3566984  0.4331472  1.19847849 -1.3513725  0.16903213
+    #> 6 -0.06930553  0.3841566  1.1760243  0.64999980  0.3755167 -0.04599694
+    #>        Cov_21     Cov_22     Cov_23      Cov_24        Cov_25
+    #> 1 -0.15567536  0.8030043 1.23901072 -0.05506202 -0.3642275008
+    #> 2  1.10941288  0.1033714 0.07454803 -1.45522370 -1.4872738755
+    #> 3  0.86553615  1.1610863 1.03154894 -0.55585866 -0.2862231471
+    #> 4  1.20154215  2.6673588 1.39874736  0.48103810 -0.8724692399
+    #> 5 -0.45419981  0.8162057 2.20369481 -2.67218827 -0.3548902816
+    #> 6 -0.08299207 -0.1941776 1.18069725  0.94158401 -0.0007718658
 
 We first analyze the dataset with boosted regression trees, using the
 following code. We also plot variable importance.
@@ -140,8 +141,8 @@ var_imp <- summary(brt)
 
 ![](README_files/figure-markdown_github/fit_brt-1.png)
 
-The top 5 most important variables (in this case Cov_8, Cov_4, Cov_6,
-Cov_10, Cov_7) were then included in a Bayesian species distribution
+The top 5 most important variables (in this case Cov_5, Cov_7, Cov_8,
+Cov_6, Cov_9) were then included in a Bayesian species distribution
 model, fit using the `inlabru` package in R.
 
 The model includes a spatially autocorreled random field to account for
@@ -244,13 +245,13 @@ cor_brt <- cor(simdat$pred_brt,simdat$y)
 cor_inla <- cor(simdat$pred_inla,simdat$y)
 ```
 
-The RMSE for the BRT surface is 0.61, while the RMSE for the INLA
-surface is 0.54. Thus, in this simulation, the RMSE from the Bayesian
-model was 10.42% lower than the model fit using BRT.
+The RMSE for the BRT surface is 0.63, while the RMSE for the INLA
+surface is 0.42. Thus, in this simulation, the RMSE from the Bayesian
+model was 33.25% lower than the model fit using BRT.
 
 Additionally, the correlation between the true surface and the
-prediction from BRT was 0.94. The correlation for the Bayesian model
-prediction was 0.95.
+prediction from BRT was 0.96. The correlation for the Bayesian model
+prediction was 0.98.
 
 These results (as well as visual inspection of the surfaces above)
 illustrate that the Bayesian model resulted in much better predictions
@@ -270,10 +271,10 @@ Results are illustrated below.
 
 ![](README_files/figure-markdown_github/conduct_repeated_simulations-1.png)![](README_files/figure-markdown_github/conduct_repeated_simulations-2.png)
 
-The Bayesian model resulted in lower RMSE for 97% of simulations.
+The Bayesian model resulted in lower RMSE for 99% of simulations.
 
 Additionally, predictions from the Bayesian model had a higher
-correlation with the true response surface in 97% of simulations.
+correlation with the true response surface in 99% of simulations.
 
 # Conclusions
 
