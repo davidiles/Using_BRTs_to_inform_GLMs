@@ -75,7 +75,7 @@ resulting species distribution is shown below:
 ![](README_files/figure-markdown_github/species_distribution-1.png)
 
 We then simulate a survey of the species across the landscape. We assume
-there were 250 surveys conducted. At each survey location, the response
+there were 500 surveys conducted. At each survey location, the response
 variable is recorded, along with covariate information.
 
 However, we assume that the surveyor does not record the first 3
