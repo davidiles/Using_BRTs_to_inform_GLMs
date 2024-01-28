@@ -244,9 +244,11 @@ Since the result above might have been weird and/or unrepresentative, we
 need to re-run the simulation many times to see how consistently a
 Bayesian model improves the model fit.
 
-We conducted 150 simulations. For each simulation, we stored the Root
-Mean Squared Error and correlation between model predictions and the
-‘true’ response surface (y).
+We conducted 500 repeated simulations. For each simulation, we stored
+the Root Mean Squared Error and correlation between model predictions
+and the ‘true’ response surface (y). We stored these values separately
+based on either BRT models, or Bayesian models that incorporated the
+best covariates identified by BRTs.
 
 Results are illustrated below.
 
