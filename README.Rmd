@@ -187,7 +187,7 @@ print(head(dat))
 
 We first analyze the dataset with boosted regression trees, using the following code.  We also plot variable importance.
 
-```{r fit_brt, cache = TRUE, results = "hide",fig.width=6, fig.height=20}
+```{r fit_brt, cache = TRUE, echo = FALSE, results = "hide",fig.width=6, fig.height=20}
 
 # ---------------------------------------
 # Fit BRT and generate landscape predictions
