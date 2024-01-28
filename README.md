@@ -278,12 +278,12 @@ Results are illustrated below.
 ![](README_files/figure-markdown_github/conduct_repeated_simulations-1.png)![](README_files/figure-markdown_github/conduct_repeated_simulations-2.png)
 
 The Bayesian model resulted in lower RMSE for 99% of simulations, and
-the median percent change in RMSE was -26.17%, when using Bayesian
-models compared to BRTs.
+the mean percent change in RMSE was -26.57%, when using Bayesian models
+compared to BRTs.
 
 Additionally, predictions from the Bayesian model had a higher
 correlation with the true response surface in 99% of simulations. The
-median change in correlation was 0.06.
+mean change in correlation was +0.06.
 
 # Conclusions
 
