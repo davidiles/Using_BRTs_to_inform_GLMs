@@ -8,7 +8,7 @@ distributions. Our approach is to:
     most important covariates for predicting species distributions, then
 
 2.  Use the most important covariates in a Bayesian species distribution
-    model that allows us to propagage uncertainty, and simultaneously
+    model that allows us to propagate uncertainty, and simultaneously
     accounts for spatial autocorrelation, random effects, and
     informative priors.
 
