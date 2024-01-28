@@ -573,9 +573,9 @@ print(cor_plot)
 #mean(results$cor_inla > results$cor_brt) # 0.97
 ```
 
-The Bayesian model resulted in lower RMSE for `r 100*round(mean(results$RMSE_inla < results$RMSE_brt),2)`% of simulations, and the mean percent change in RMSE was `r round(mean(100*(RMSE_inla- RMSE_brt)/RMSE_brt),2)`, when using Bayesian models compared to BRTs.
+The Bayesian model resulted in lower RMSE for `r 100*round(mean(results$RMSE_inla < results$RMSE_brt),2)`% of simulations, and the median percent change in RMSE was `r round(median(100*(RMSE_inla- RMSE_brt)/RMSE_brt),2)`%, when using Bayesian models compared to BRTs.
 
-Additionally, predictions from the Bayesian model had a higher correlation with the true response surface in `r 100*round(mean(results$cor_inla > results$cor_brt),2)`% of simulations.  The mean change in correlation was `r round(mean(cor_inla-cor_brt),2)`.
+Additionally, predictions from the Bayesian model had a higher correlation with the true response surface in `r 100*round(mean(results$cor_inla > results$cor_brt),2)`% of simulations.  The median change in correlation was `r round(median(cor_inla-cor_brt),2)`.
 
 # Conclusions
 
