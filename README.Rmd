@@ -193,7 +193,7 @@ We first analyze the dataset with boosted regression trees, using the following 
 # Fit BRT and generate landscape predictions
 # ---------------------------------------
 
-brt <- gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
+brt <- dismo::gbm.step(data=dat, gbm.x = 4:ncol(dat), gbm.y = 3,
                 family = "gaussian", tree.complexity = 5,
                 learning.rate = 0.01, bag.fraction = 0.5,
                 verbose = FALSE,
